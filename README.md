@@ -1,1 +1,1 @@
-Repo for comutational chemistry scripts and file handing miscellania
+Repo for computational chemistry scripts and file handing miscellania

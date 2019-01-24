@@ -775,8 +775,8 @@ sub printHelp()
 {
   print "-------------------------------------------------------------------------------------\n";
   print "\nWelcome to fixg09inp.pl, a script written by Mike Wykes (mikewykesi\@gmail.com).\n";
-  print "Version 1.2.2 - bug fixes and addtions by WT: Accepts negative charge in input .com\n";
-  print "and carries through Optimisation charge/multiplicity to TD job.\n";
+  print "Version 1.2.2 - bug fixes and additions by WT (will.tarran\@gmail.com):\n";
+  print "Accepts negative charge in input .com and carries through Optimisation charge/multiplicity to TD job.\n";
   print "New jobtypes 7-10 and subroutines for generating custom and standard solvent corrections in jobtype 10\n\n";
   print "This script reads in the geometry from a Gaussian input file and rewrites a new file\n"; 
   print "with Gaussian options appropriate for various job types.\n";
