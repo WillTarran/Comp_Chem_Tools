@@ -17,7 +17,9 @@ class Result:
                 raise ValueError('Error in .logfile')
 
     def subjobs(self):
-        '''splits container results into individual g09 calculations'''
+        
+        """splits container results into individual g09 calculations"""
+
         parts = []
         start = 0
         for index, line in enumerate(self.content):
@@ -51,6 +53,9 @@ class Job:
         self.termination = False
 
     def parse(self):
+
+        """Reads logfile, populating class instance data"""
+
         for i, line in enumerate(self.content):
             key, match = self._match(line)
             if key == 'input':
@@ -64,11 +69,16 @@ class Job:
             elif key == 'scf':
                 self.SCF.append(float(match.group(3)))
             elif key == 'occ':
-                orbitals = match.group(# index these)
-                self.occupied += [ float(occ) for occ in orbitals ]
+                orbitals = list(match.groups())[1:]
+                self.occupied += [float(i) for i in orbitals if i]
             elif key == 'virt':
-                orbitals = match.group(# index these)
-                self.virtual += [ float(virt) for virt in orbitals ]
+                orbitals = list(match.groups())[1:]
+                self.virtual += [float(i) for i in orbitals if i]
+
+    def report(self):
+
+        """Returns available data"""
+        pass
 
     @staticmethod
     def _match(line):
@@ -81,14 +91,15 @@ class Job:
     def logfile(self):
         return self.content
 
+_ORB_REGEX = r'(\d+\.\d+\s*)?'
+
 _MATCHES = {
     'input': re.compile(r'( Input=)(.*)'),
     'output': re.compile(r'( Output=)(.*)'),
     'rev': re.compile(r'( Gaussian 09:)(.*)'),
     'route': re.compile(r' #'),
-    'scf': re.compile(r' (SCF Done:)(.*)(-\d+\.\d+)')
-    # occupied
-    # virtual
+    'scf': re.compile(r' (SCF Done:)(.*)(-\d+\.\d+)'),
+    'occ': re.compile(r'( alpha occupied -- )' + _ORB_REGEX * 5),  # check vs logfile
+    'virt': re.compile(r'( alpha virtual -- )' + _ORB_REGEX * 5)  # check vs logfile
     }
 
-    # methods for extracting and holding data from logfile
