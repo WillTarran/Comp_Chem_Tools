@@ -17,6 +17,8 @@ $numProc = 4;
 $memory = "7GB";
 $jobtype=0;
 $overRideChargeMulti=0;
+$functional="B3LYP";
+$basis="6-31g(d)";
 $TDfunc= "B3LYP";
 $JOBTYPEKNOWN=0;
 $optKeyword="opt";
@@ -373,7 +375,7 @@ foreach $inputCom (@comFiles)
   }
 
   open OUTPUT,">", $inputCom;
-   $toPrint=~s/\n\n\n/\n\n/; #remove and double blank lines - g09 will fail otherwise
+   $toPrint=~s/\n\n\n/\n\n/; #remove any double blank lines - g09 will fail otherwise
    print OUTPUT $toPrint; 
 }
 
@@ -409,20 +411,14 @@ sub makeFirstGeomOptCmd()
   }
   if($USEECP) 
   {
-    $cmd=sprintf("#p %s B3LYP/gen pseudo=read nosym",$optKeyword);
-#    $elemList=join(' ',keys %nOfSym);
-#    foreach $ecpElem (@ecpElems) 
-#    {
-#     $elemList=~s/$ecpElem//;
-#    }
-#    $elemList=~s/  / /;
+    $cmd=sprintf("#p %s B3LYP/gen pseudo=read nosym",$optKeyword);  # Functional and Basis Set Hard Coded here...
     $ecpElemList=join(' ',@ecpElems);
     print "The following elements will use the lanl2dz effective core potential: $ecpElemList\n";
     $basisSetInput="\n".$elemList."0\n6-31g(d)\n****\n".$ecpElemList." 0\nlanl2dz\n****\n\n".$ecpElemList." 0\nlanl2dz\n\n";
   }
   else
   {
-    $cmd=sprintf("#p %s B3LYP/6-31g(d) nosym",$optKeyword);
+    $cmd=sprintf("#p %s B3LYP/6-31g(d) nosym",$optKeyword); # Functional and Basis Set Hard Coded here...
     $basisSetInput="";
   }
   return($cmd,$basisSetInput);

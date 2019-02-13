@@ -1,2 +1,7 @@
+# testfiles directory
 testfiles
+
+# python bitcode etc.
+*.py[co]
+__pycache__/
 
