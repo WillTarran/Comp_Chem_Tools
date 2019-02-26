@@ -38,19 +38,19 @@ class Job:
 
     def __init__(self, chunk):
         self.content = chunk
-        self.input = False
-        self.output = False
-        self.revision = False
-        self.route = False
-        self.title = False
-        self.zmatrix = False
+        self.input = None
+        self.output = None
+        self.revision = None
+        self.route = None
+        self.title = None
+        self.zmatrix = None
         self.SCF = []
         self.occupied = []
         self.virtual = []
-        self.l9999 = False
-        self.quote = False
-        self.cpu_time = False
-        self.termination = False
+        self.l9999 = None
+        self.quote = None
+        self.cpu_time = None
+        self.termination = None
 
     def parse(self):
 
@@ -91,7 +91,7 @@ class Job:
     def logfile(self):
         return self.content
 
-_ORB_REGEX = r'(\d+\.\d+\s*)?'
+_ORB_REGEX = r'(-?\d+\.\d+\s*)?'
 
 _MATCHES = {
     'input': re.compile(r'( Input=)(.*)'),
@@ -99,7 +99,7 @@ _MATCHES = {
     'rev': re.compile(r'( Gaussian 09:)(.*)'),
     'route': re.compile(r' #'),
     'scf': re.compile(r' (SCF Done:)(.*)(-\d+\.\d+)'),
-    'occ': re.compile(r'( alpha occupied -- )' + _ORB_REGEX * 5),  # check vs logfile
-    'virt': re.compile(r'( alpha virtual -- )' + _ORB_REGEX * 5)  # check vs logfile
+    'occ': re.compile(r'( Alpha\s+occ\..*--\s+)' + _ORB_REGEX * 5),
+    'virt': re.compile(r'( Alpha\s+virt\..*--\s+)' + _ORB_REGEX * 5)
     }
 

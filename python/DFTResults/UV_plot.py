@@ -118,21 +118,8 @@ class Pair:
             fig, ax, l = struc.gen_plot(content=content, plot=(fig, ax))
             lines.append(l)
         ax.legend()
-#        try: self.plot_tuple
-#        except AttributeError: self.plot_tuple = plt.subplots()
-#        self.plot_tuple[1].plot(1242 / self.spectra[0][0], self.spectra[0][1], label='Open')
-#        self.plot_tuple[1].plot(1242 / self.spectra[1][0], self.spectra[1][1], label='Closed')
-#        self.plot_tuple[1].legend()
-#        return self.plot_tuple
-#    
-#    def line_spec(self):        # states from self.structures[n].states !!!
-#        try: self.plot_tuple
-#        except AttributeError: self.plot_tuple = plt.subplots()
-#        for struc, color in zip(self.structures, ('k', 'r')):
-#            x , y = zip(*struc.states)
-#            self.plot_tuple[1].stem( 1242 / np.array(x), np.array(y), markerfmt=' ', linefmt=color, basefmt=' ')
-#        self.plot_tuple[1].legend()
-#        return self.plot_tuple
+        self.plot = fig, ax, lines
+        return self.plot
     
     @staticmethod
     def plot_together(pair1, pair2):
@@ -140,6 +127,6 @@ class Pair:
         fig, ax= plt.subplots()
         for pair in [pair1, pair2]:
             name = [s.name for s in pair.structures]
-            ax.plot(1242 / pair.spectra[0][0], pair.spectra[0][1], label=name[0])
-            ax.plot(1242 / pair.spectra[1][0], pair.spectra[1][1], label=name[1])
+            ax.plot(pair.spectra[0][0], pair.spectra[0][1], label=name[0])
+            ax.plot(pair.spectra[1][0], pair.spectra[1][1], label=name[1])
         ax.legend()
