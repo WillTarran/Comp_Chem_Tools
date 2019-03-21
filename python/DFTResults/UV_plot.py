@@ -24,6 +24,8 @@ class Structure:
     Correctly formatted input can be generated as follows:
     babel file.log file.smi
     getg09ES.awk name.log >> file.smi && mv file.smi file.txt"""
+
+    x = np.linspace(1242/200, 1242/900,1000)
     
     def __init__(self, filename, name=None):
         with open(filename) as file:
@@ -45,7 +47,7 @@ class Structure:
         self.states = [ (float(line.split()[2]), float(line.split()[7])) for line in self.content if 'Singlet' in line]
         return self.states
     
-    def gen_spectrum(self, X=np.linspace(1242/200, 1242/900, 1000), width=0.3):
+    def gen_spectrum(self, X=x, width=0.3):
         '''Generate spectrum from ES information in wavelength domain
         Sets and returns (X, Y) array tuple.  Default region is 200nm-900nm'''
         Y = np.zeros_like(X)
