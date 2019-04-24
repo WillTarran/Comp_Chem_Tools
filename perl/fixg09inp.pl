@@ -368,6 +368,19 @@ foreach $inputCom (@comFiles)
 
     $JOBTYPEKNOWN=1;
   }
+  if($jobtype=="11") #B3LYP geom opt + TD-DFT calc for 30 singlets
+  { 
+    ($cmd,$basisSetInput)=makeFirstGeomOptCmd(\%nOfSym,$optKeyword);
+    if($CONNECTIVITY) { $cmd=$cmd." geom=connectivity ";}
+    $title="\n\nOpt\n\n"; #blank line title blank line
+    $toPrint=$toPrint.$cmd." ".$extraOptions.$title.$charge." ".$multiplicity."\n".$geom.$basisSetInput;
+
+    $chk[1]=$chk[0];
+    $chk[1]=~s/.chk/-TDsinglets.chk/;
+    $TDsection="--Link1--\n".makeHeader($numProc,$memory,$chk[0],$chk[1]).makeUVcmdTitleAndMulti($TDfunc,$extraOptions)."\n";
+    $toPrint=$toPrint.$TDsection;
+    $JOBTYPEKNOWN=1; 
+  }
   if($JOBTYPEKNOWN==0)
   {
     print "ERROR: Unknown jobtype: $jobtype\n";
@@ -429,6 +442,14 @@ sub makeTDcmdTitleAndMulti()
   my $TDfunc=shift(@_);
   my $extraOptions=shift(@_);
   my $TDcmd="#p TD=(50-50,nstates=5) $TDfunc/chkbas geom=check guess=read $extraOptions\n\nTD-DFT at previous geom (S0?) using S0 as reference state\n\n$charge $multiplicity\n";
+  return  $TDcmd;
+}
+
+sub makeUVcmdTitleAndMulti()
+{
+  my $TDfunc=shift(@_);
+  my $extraOptions=shift(@_);
+  my $TDcmd="#p TD=(singlets,nstates=30) $TDfunc/chkbas geom=check guess=read $extraOptions\n\nTD-DFT for 30 singlet states at previous geom (S0?) using S0 as reference state\n\n$charge $multiplicity\n";
   return  $TDcmd;
 }
 
@@ -788,6 +809,7 @@ sub printHelp()
   print "8) B3LYP geom opt with frequency calculation\n";
   print "9) AM1 geom opt only \n";
   print "10) Multistage job for redox potential and SCRF solvent correction; use -sol to specify solvent";
+  print "11) B3LYP geom opt + TD-DFT calc for 30 singlet states - useful for UV spectra\n";
   print "\n";
   print "\nSyntax: fixg09inp.pl -j jobtype [-p nProcs] [-m mem] [-cm charge multiplicity] [-tdfunc functional] [-e \"extra keywords\"] [-opt \"opt=(options)\"] [-sol solvent] inputFiles(s)\n\n";
   print "Optional arguments are enclosed in square brackets []\n";
