@@ -808,7 +808,7 @@ sub printHelp()
   print "7) B3LYP geom opt + 2 TD-DFT calculations (B3LYP followed by PBE0)\n";
   print "8) B3LYP geom opt with frequency calculation\n";
   print "9) AM1 geom opt only \n";
-  print "10) Multistage job for redox potential and SCRF solvent correction; use -sol to specify solvent";
+  print "10) Multistage job for redox potential and SCRF solvent correction; use -sol to specify solvent\n";
   print "11) B3LYP geom opt + TD-DFT calc for 30 singlet states - useful for UV spectra\n";
   print "\n";
   print "\nSyntax: fixg09inp.pl -j jobtype [-p nProcs] [-m mem] [-cm charge multiplicity] [-tdfunc functional] [-e \"extra keywords\"] [-opt \"opt=(options)\"] [-sol solvent] inputFiles(s)\n\n";
