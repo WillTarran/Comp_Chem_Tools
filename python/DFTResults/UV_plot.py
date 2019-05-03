@@ -4,17 +4,21 @@ Currently designed for use with Jupyter for inline plotting of data
 Initial test version takes mangled txt input from existing extract scripts
 Intention is to refactor for compatibility with new python extract API
 
-simple mung available in jupyter_spec.sh to produce current input format
+simple mung available in jupyterData.sh to produce current input format
 from TD-DFT .log file"""
-
-from rdkit import Chem
-from rdkit.Chem.Draw import IPythonConsole
-from rdkit.Chem.Draw.MolDrawing import MolDrawing, DrawingOptions
-DrawingOptions.bondLineWidth=2.5
 
 from os import path
 import numpy as np
 import matplotlib.pyplot as plt
+
+# imports for interactive plot
+from ipywidgets import interact, IntRangeSlider, FloatSlider
+
+# imports for structure drawing
+from rdkit import Chem
+from rdkit.Chem.Draw import IPythonConsole
+from rdkit.Chem.Draw.MolDrawing import MolDrawing, DrawingOptions
+DrawingOptions.bondLineWidth=2.5
 
 class Structure:
     """Takes filename of excited state information from g09 calculation
@@ -63,7 +67,7 @@ class Structure:
         self.linespec = 1242 / np.array(X), np.array(Y)
         return self.linespec
 
-    def gen_plot(self, content='all', plot=None):
+    def gen_plot(self, content='all', stemcolor='k', plot=None):
         '''Generates pyplot from available data.  By default, instantiates new Figure
         and Axes objects.  Existing Plot, as (fig, ax), can be passed for adding overlays
         ---------
@@ -78,8 +82,30 @@ class Structure:
         if content == 'all' or content == 'spec':
             lines.append(ax.plot(self.spectrum[0], self.spectrum[1], label=self.name))
         if content == 'all' or content == 'line':
-            lines.append(ax.stem(self.linespec[0], self.linespec[1], markerfmt=' ', basefmt=' ', linefmt='k'))
+            lines.append(ax.stem(self.linespec[0], self.linespec[1], markerfmt=' ', basefmt=' ', linefmt=stemcolor))
         return fig, ax, lines
+
+    def slide_plot(self):
+        '''Interactive plot for use in jupyter notebook
+        Provides plot of UV spectrum with sliders to change
+        wavelength domain range and homogeneous broadening'''
+        @interact(
+            domain = IntRangeSlider(
+                value = [200, 900],
+                min = 100,
+                max = 1000,
+                step = 25,
+                description = 'Spectrum Range: '),
+            width = FloatSlider(
+                value = 0.3,
+                min = 0.1,
+                max = 0.5,
+                step = 0.05,
+                description = 'Broadening: '))
+        def _plot(domain,width):
+            x = np.linspace(1242/domain[1], 1242/domain[0], 1000)
+            self.gen_spectrum(X=x, width=width)
+            self.gen_plot('spec')
     
     @staticmethod
     def _transition(arr, energy, width):
@@ -93,6 +119,7 @@ class Pair:
     Takes filenames for UV data from 'open' and 'closed' forms
     
     Method to plot both UV spectra on single axes"""
+	
     def __init__(self, op, cl):
         self.structures = [Structure(op), Structure(cl)]
     
@@ -116,8 +143,8 @@ class Pair:
         '''Plots UV spectra of structure pair'''
         fig, ax = plt.subplots()
         lines = []
-        for struc in self.structures:
-            fig, ax, l = struc.gen_plot(content=content, plot=(fig, ax))
+        for struc, stemcolor in zip(self.structures, ['k', 'grey']):
+            fig, ax, l = struc.gen_plot(content=content, stemcolor=stemcolor, plot=(fig, ax))
             lines.append(l)
         ax.legend()
         self.plot = fig, ax, lines
