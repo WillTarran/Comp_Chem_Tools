@@ -39,7 +39,7 @@ class Structure:
         if name == None:
             self.name = path.splitext(self.logfile)[0]
         else:
-            self.name = self.logfile
+            self.name = name
     
     def make_structure(self):
         '''Generate image of molecule'''
@@ -80,9 +80,15 @@ class Structure:
         fig, ax = plot or plt.subplots()
         lines = []
         if content == 'all' or content == 'spec':
-            lines.append(ax.plot(self.spectrum[0], self.spectrum[1], label=self.name))
+            try:
+                lines.append(ax.plot(self.spectrum[0], self.spectrum[1], label=self.name))
+            except AttributeError:
+                print('No Spectrum Available')
         if content == 'all' or content == 'line':
-            lines.append(ax.stem(self.linespec[0], self.linespec[1], markerfmt=' ', basefmt=' ', linefmt=stemcolor))
+            try:
+                lines.append(ax.stem(self.linespec[0], self.linespec[1], markerfmt=' ', basefmt=' ', linefmt=stemcolor))
+            except AttributeError:
+                print('No Linespectrum Available')
         return fig, ax, lines
 
     def slide_plot(self):
